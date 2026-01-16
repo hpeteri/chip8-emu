@@ -11,6 +11,12 @@ set(CMAKE_C_EXTENSIONS OFF)
 
 add_executable(chip8-emu)
 
+target_compile_options(
+  chip8-emu
+  PRIVATE
+  -g
+)
+
 target_sources(
   chip8-emu
   PRIVATE

@@ -3,8 +3,8 @@
 
 #include "c8_inttypes.h"
 
-#define C8_DISP_W (64)
-#define C8_DISP_H (32)
+#define C8_SCREEN_W (64)
+#define C8_SCREEN_H (32)
 #define C8_PROGRAM_START_ADDR (0x200)
 
 /**
@@ -24,10 +24,9 @@ struct c8_cpu {
     uint16_t I; 
 
     /* The stack is only used to store return addresses when
-     * subroutines are called. The original RCA 1802 version allocated
-     * 48 bytes for up to 12 levels of nesting. Modern implementations
-     * usually have more */
-    uint16_t stack[48];
+     * subroutines are called.
+     */
+    uint16_t stack[16];
 
     /* Stack Pointer */
     uint8_t  sp; 
@@ -39,7 +38,7 @@ struct c8_cpu {
     /* Hex Keyboard has 16 keys ranging from 0 to F */
     uint8_t keyboard[16];
 
-    uint8_t display[C8_DISP_W * C8_DISP_H];
+    uint8_t screen[C8_SCREEN_W * C8_SCREEN_H];
 };
 
 #endif /* C8_CPU_H */
