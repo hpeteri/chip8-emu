@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "c8_cpu.h"
+#include "c8_emu.h"
 
 #include <string.h> /* memset */
 
@@ -28,6 +29,16 @@ int main(
     }
 
     /* Run Program */
+    if (C8_TRUE == result)
+    {
+        result = c8_emu_run(&cpu);
+
+        if (C8_FALSE == result)
+        {
+            printf("Error encountered when running emulator.\n");
+        }
+    }
+
     
     return 0;
 }
@@ -38,7 +49,7 @@ int main(
  * @brief opens rom file from path and loads it to memory
  * @param[in] p_path, path/to/rom. Must not be NULL.
  * @param[out] p_cpu, Pointer to CPU. Must not be NULL.
- * @return 1 on success, 0 otherwise
+ * @return C8_TRUE on success, C8_FALSE otherwise
  */
 static int c8_load_rom(
     const char* p_path,
@@ -47,6 +58,7 @@ static int c8_load_rom(
     int result = C8_TRUE;
     FILE* f = fopen(p_path, "rb");
     size_t file_size;
+    size_t program_size;
 
     /* Clear memory */
     memset(p_cpu, 0x00, sizeof(*p_cpu));
@@ -74,11 +86,12 @@ static int c8_load_rom(
         }
     }
 
-    /* Load ROM */
     if (C8_TRUE == result)
     {
-        fread(&p_cpu->ram[C8_PROGRAM_START_ADDR], 1, file_size, f);
-
+        /* Load ROM */
+        program_size = fread(&p_cpu->ram[C8_PROGRAM_START_ADDR], 1, file_size, f);
+        printf("Program Size: %"PRIu64" B\n", program_size);
+        
         /* Set Program Counter */
         p_cpu->pc = C8_PROGRAM_START_ADDR;
     }

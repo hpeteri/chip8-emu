@@ -15,6 +15,7 @@ target_sources(
   chip8-emu
   PRIVATE
   src/main.c
+  src/c8_emu.c
 )
 
 target_include_directories(
