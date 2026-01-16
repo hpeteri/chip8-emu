@@ -3,4 +3,7 @@
 
 #include <inttypes.h>
 
+#define C8_TRUE  (1)
+#define C8_FALSE (0)
+
 #endif

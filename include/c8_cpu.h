@@ -5,6 +5,7 @@
 
 #define C8_DISP_W (64)
 #define C8_DISP_H (32)
+#define C8_PROGRAM_START_ADDR (0x200)
 
 /**
  * Structure for CHIP-8 programming language compatible CPU.
@@ -12,7 +13,7 @@
 struct c8_cpu {
 
     /* 4096 memory locations 0x1000 */
-    uint8_t ram[512];
+    uint8_t ram[4096];
     /* Program Counter */
     uint16_t pc; 
     
