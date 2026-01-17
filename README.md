@@ -1,6 +1,7 @@
 # Chip8-emu
 
 A portable CHIP-8 emulator written in C.
+https://en.wikipedia.org/wiki/CHIP-8
 
 # Overview
 

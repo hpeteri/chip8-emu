@@ -113,6 +113,7 @@ static int c8_load_rom(
         
         /* Set Program Counter */
         p_cpu->pc = C8_PROGRAM_START_ADDR;
+        p_cpu->pc_max = program_size + C8_PROGRAM_START_ADDR;
     }
 
     /* Close File */

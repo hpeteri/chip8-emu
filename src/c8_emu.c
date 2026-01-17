@@ -42,20 +42,29 @@ int c8_emu_run(struct c8_cpu* p_cpu)
 {
     srand(time(NULL));
 
-    
     int result = C8_FALSE;
     int run = C8_TRUE;
     int timer_ticks = 0;
     
     uint16_t tmp;
     uint8_t cx, cy;
+
+    uint16_t cycles = 0;
     
     while (run)
     {
+        if (p_cpu->pc >= p_cpu->pc_max)
+        {
+            printf("unexpected program counter %d / %d \n", p_cpu->pc, p_cpu->pc_max);
+            break;
+        }
+        
         /* Fetch */
         uint16_t op = (p_cpu->ram[p_cpu->pc] << 8) | p_cpu->ram[p_cpu->pc + 1];
         p_cpu->pc += 2;
 
+        //printf("PC: 0x%03X | Opcode: 0x%04X\n", p_cpu->pc - 2, op);
+        
         /* Decode */
         const uint8_t type = (op & 0xF000) >> 12;
         const uint8_t x = (op & 0x0F00) >> 8;
@@ -92,7 +101,7 @@ int c8_emu_run(struct c8_cpu* p_cpu)
                 /* Opcode: 0NNN
                  * Calls machine code routine at address NNN
                  */
-                
+
                 assert(0);
             }
             
@@ -109,7 +118,7 @@ int c8_emu_run(struct c8_cpu* p_cpu)
             /* Opcode: 0x2NNN
              * Calls subroutine at NNN
              */
-            assert(p_cpu->sp < 16);
+            assert(p_cpu->sp < C8_ARRAY_SIZE(p_cpu->stack));
 
             p_cpu->stack[p_cpu->sp] = p_cpu->pc;
             p_cpu->sp++;
@@ -306,6 +315,10 @@ int c8_emu_run(struct c8_cpu* p_cpu)
                 /* Opcode: 0xEx9E
                  * Skips the next instruction if the key stored in VX is pressed
                  */
+                if (p_cpu->keyboard[p_cpu->V[x & 0xF]])
+                {
+                    p_cpu->pc += 2;
+                }
                 assert(0);
             }
             else if (0xA1 == nn)
@@ -313,7 +326,10 @@ int c8_emu_run(struct c8_cpu* p_cpu)
                 /* Opcode: 0xExA1
                  * Skips the next instruction if the key stored in VX is not pressed
                  */
-                assert(0);
+                if (!p_cpu->keyboard[p_cpu->V[x & 0xF]])
+                {
+                    p_cpu->pc += 2;
+                }
             }
             else
             {
@@ -321,7 +337,19 @@ int c8_emu_run(struct c8_cpu* p_cpu)
             }
             break;
         case 0xF:
-            if (0x15 == nn)
+            if (0x07 == nn)
+            {
+                /* Opcode: 0xFX07
+                 * Sets VX to the value of the delay timer
+                 */
+
+                p_cpu->V[x] = p_cpu->delay_timer;
+            }
+            else if (0x0A == nn)
+            {
+                assert(0);
+            }
+            else if (0x15 == nn)
             {
                 /* Opcode: 0xFX15
                  * Sets the delay timer to VX
@@ -384,14 +412,16 @@ int c8_emu_run(struct c8_cpu* p_cpu)
             }
             else
             {
-                assert(0);
+                //assert(0);
             }
             break;
         default:
             assert(0);
             break;
         }
-
+        
+        cycles++;
+        
         /* Update timers */
         /* 500Hz / 60 Hz = 8 */
         timer_ticks++;
@@ -400,6 +430,7 @@ int c8_emu_run(struct c8_cpu* p_cpu)
             if (p_cpu->sound_timer > 0) p_cpu->sound_timer--;
             timer_ticks = 0;
         }
+        
         /* Sleep to approximately 60Hz frame */
         C8_SLEEP_MS(2);
     }
