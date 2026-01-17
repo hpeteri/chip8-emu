@@ -13,7 +13,7 @@ The emulator follow the standard CHIP-8 specifications:
 * 64x32 monochrome display buffer.
 * 60Hz delay and sound timers.
 
-Keyboard handling and sound output has not yet been implemented. Displaying the CHIP-8 screen is done by printing to the terminal.
+Keyboard handling and sound output has not yet been implemented. Displaying the CHIP-8 screen is done by printing to the terminal. Further work to implement proper rendering and input handling with SDL to be done.
 
 # How it Works
 
