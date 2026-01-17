@@ -12,6 +12,7 @@
 
 /**
  * Structure for CHIP-8 programming language compatible CPU.
+ * https://en.wikipedia.org/wiki/CHIP-8
  */
 struct c8_cpu {
 

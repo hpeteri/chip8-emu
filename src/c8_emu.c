@@ -1,4 +1,3 @@
-/* for usleep */
 #define _POSIX_C_SOURCE 199309L
 
 #define C8_SLEEP_MS(ms)                                                 \
@@ -482,7 +481,6 @@ static void c8_emu_reg_dump(
     }
 }
     
-
 static void c8_emu_reg_load(
     struct c8_cpu* p_cpu,
     uint8_t x)
@@ -493,8 +491,6 @@ static void c8_emu_reg_load(
         p_cpu->V[i] = p_cpu->ram[p_cpu->I + i];
     }
 }
-
-
 
 static void c8_emu_print_screen(
     struct c8_cpu* p_cpu)
